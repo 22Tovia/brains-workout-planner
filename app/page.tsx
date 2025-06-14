@@ -20,6 +20,7 @@ export default async function LandingPage() {
       <Link href="/login" className="text-green-500 underline">
         Register
       </Link>
+      <p className="text-red-500 font-extrabold mt-30">Created by Brainfriend4life</p>
     </main>
   );
 }
