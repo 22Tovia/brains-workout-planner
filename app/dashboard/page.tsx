@@ -36,17 +36,14 @@ export default function Dashboard() {
 
       setUserId(id);
 
-      // Try load from localStorage first
       const saved = localStorage.getItem('workouts');
       if (saved) {
         setWorkouts(JSON.parse(saved));
         return;
       }
 
-      // Otherwise fetch from your API
       const data = await fetchWorkouts(id);
       if (Array.isArray(data)) {
-        // map your fetched workouts to include completed and description fields
         const mapped = data.map((w: any) => ({
           ...w,
           completed: false,
@@ -61,7 +58,6 @@ export default function Dashboard() {
     load();
   }, []);
 
-  // Save workouts to localStorage on changes
   useEffect(() => {
     localStorage.setItem('workouts', JSON.stringify(workouts));
   }, [workouts]);
@@ -125,95 +121,111 @@ export default function Dashboard() {
     );
   };
 
-  // Filter workouts by category
   const filteredWorkouts =
     filter === 'All'
       ? workouts
       : workouts.filter((w) => w.category === filter);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      <h1 className="text-green-600 text-center mt-10 mb-6 text-3xl font-bold">
-        Welcome to your dashboard
+    <main className="max-w-4xl mx-auto px-6 py-12 bg-gray-50 min-h-screen rounded-md shadow-md">
+      <h1 className="text-4xl font-extrabold text-center text-green-700 mb-10 tracking-wide drop-shadow-sm">
+        Your Workout Dashboard
       </h1>
 
-      <AddWorkoutForm onAdd={handleAddWorkout}  />
+      <section className="mb-8">
+        <AddWorkoutForm onAdd={handleAddWorkout} />
+      </section>
 
-      <div className="my-4 text-center">
-        <p>User ID: {userId}</p>
+      <section className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <p className="text-sm text-gray-600">Logged in as: <span className="font-medium text-green-800">{userId || 'Guest'}</span></p>
 
-        <label htmlFor="category-filter" className="mr-2 font-semibold">
-          Filter by category:
-        </label>
-        <select
-          id="category-filter"
-          className="border rounded px-3 py-1"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        >
-          <option value="All">All</option>
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <h2 className="text-xl font-semibold mb-4">Your Workouts</h2>
-      <div className="space-y-4">
-        {filteredWorkouts.length === 0 && (
-          <p className="text-center text-gray-500">No workouts found.</p>
-        )}
-
-        {filteredWorkouts.map((workout) => (
-          <Card
-            key={workout.id}
-            className={`border ${
-              workout.completed ? 'bg-green-100' : 'bg-white'
-            }`}
+        <div className="flex items-center space-x-3">
+          <label htmlFor="category-filter" className="font-semibold text-gray-700">
+            Filter by category:
+          </label>
+          <select
+            id="category-filter"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="border border-gray-300 rounded-md px-4 py-2 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400"
           >
-            <CardHeader>
-              <CardTitle
-                className={workout.completed ? 'line-through text-gray-600' : ''}
-              >
-                {workout.name}
-              </CardTitle>
-              <CardDescription>{workout.category || 'No category'}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className={workout.completed ? 'line-through text-gray-500' : ''}>
-                {workout.description || <em>No description</em>}
-              </p>
-              <p className="mt-2">Date: {workout.date}</p>
-            </CardContent>
-            <CardFooter className="space-x-4">
-              <button
-                onClick={() => toggleComplete(workout.id)}
-                className={`px-3 py-1 rounded text-white ${
-                  workout.completed
-                    ? 'bg-yellow-500 hover:bg-yellow-600'
-                    : 'bg-green-600 hover:bg-green-700'
+            <option value="All">All</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-6">Your Workouts</h2>
+
+        {filteredWorkouts.length === 0 ? (
+          <p className="text-center text-gray-500 italic">No workouts found. Add one above!</p>
+        ) : (
+          <ul className="space-y-6">
+            {filteredWorkouts.map((workout) => (
+              <Card
+                key={workout.id}
+                className={`border rounded-lg shadow-md transition-all duration-300 ease-in-out ${
+                  workout.completed ? 'bg-green-50 border-green-400' : 'bg-white border-gray-300 hover:shadow-lg'
                 }`}
               >
-                {workout.completed ? 'Mark Incomplete' : 'Mark Complete'}
-              </button>
-              <button
-                onClick={() => handleEdit(workout.id)}
-                className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDelete(workout.id)}
-                className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-              >
-                Delete
-              </button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-    </div>
+                <CardHeader className="flex justify-between items-center">
+                  <CardTitle
+                    className={`text-xl font-semibold ${
+                      workout.completed ? 'line-through text-green-600' : 'text-gray-900'
+                    }`}
+                  >
+                    {workout.name}
+                  </CardTitle>
+                  <CardDescription className="text-sm text-gray-500 italic">
+                    {workout.category || 'Uncategorized'}
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="pt-0">
+                  <p
+                    className={`text-gray-700 ${workout.completed ? 'line-through text-green-600' : ''}`}
+                  >
+                    {workout.description || <em>No description</em>}
+                  </p>
+                  <p className="mt-2 text-sm font-medium text-gray-600">
+                    📅 Date: <time dateTime={workout.date}>{workout.date}</time>
+                  </p>
+                </CardContent>
+
+                <CardFooter className="flex flex-wrap gap-3 pt-4">
+                  <button
+                    onClick={() => toggleComplete(workout.id)}
+                    className={`px-4 py-2 rounded-md font-semibold transition-colors duration-200 ${
+                      workout.completed
+                        ? 'bg-yellow-400 text-yellow-900 hover:bg-yellow-500'
+                        : 'bg-green-600 text-white hover:bg-green-700'
+                    }`}
+                  >
+                    {workout.completed ? 'Mark Incomplete' : 'Mark Complete'}
+                  </button>
+
+                  <button
+                    onClick={() => handleEdit(workout.id)}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200"
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    onClick={() => handleDelete(workout.id)}
+                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200"
+                  >
+                    Delete
+                  </button>
+                </CardFooter>
+              </Card>
+            ))}
+          </ul>
+        )}
+      </section>
+    </main>
   );
 }

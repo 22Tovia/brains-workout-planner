@@ -10,15 +10,15 @@ export default async function LandingPage() {
   }
 
   return (
-    <main className="bg-[url('/images/background.jpg')] bg-cover bg-center min-h-screen text-center p-8">
-      <h1 className="text-red-800 text-4xl font-bold mt-20">
-        Welcome to Workout Planner 💪
+    <main className="bg-[url('/images/bg.jpg')] bg-cover bg-center min-h-screen text-center p-8">
+      <h1 className="text-white  text-7xl font-bold mt-20">
+        Welcome to Workout Planner 
       </h1>
-      <Link href="/login" className="text-red-800 underline block mb-20">
-        Sign In
+      <Link href="/login" className="text-yellow-500 underline block mb-10">
+        Login
       </Link>
       <Link href="/login" className="text-green-500 underline">
-        Sign Up
+        Register
       </Link>
     </main>
   );

@@ -2,10 +2,10 @@ import { login, signup } from './actions'
 
 export default function LoginPage() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-purple-500 via-pink-500 to-red-500">
-      <form className="text-center bg-white p-8 rounded shadow-md w-full max-w-sm">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-green-500 via-orange-500 to-green-500">
+      <form className="text-center bg-purple-300 p-8 rounded shadow-md w-full max-w-sm">
         <h1 className="text-4xl mb-8 font-extrabold text-blue-950">
-          Login/Signup
+          Welcome
         </h1>
 
         <div className="mb-4">
@@ -14,6 +14,7 @@ export default function LoginPage() {
           </label>
           <input
             id="email"
+            placeholder='enter your email'
             name="email"
             type="email"
             required
@@ -27,10 +28,11 @@ export default function LoginPage() {
           </label>
           <input
             id="password"
+            placeholder='enter your password'
             name="password"
             type="password"
             required
-            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-700"
           />
         </div>
 
@@ -45,7 +47,7 @@ export default function LoginPage() {
             formAction={signup}
             className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
           >
-            Sign up
+            Register
           </button>
         </div>
       </form>
